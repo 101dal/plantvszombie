@@ -1,7 +1,7 @@
 class Plant:
     """Generate a Plant element
     """
-    def __init__(self, id: int,  delais: float, munition, vie: int, type: int, name: str, sprite: str) -> None:
+    def __init__(self, id: int,  delais: float, munition, vie: int, name: str, sprite: str) -> None:
         self.id = id
 
         self.delais = delais
@@ -9,7 +9,6 @@ class Plant:
 
         self.vie = vie
 
-        self.type = type
         self.name = name
 
         self.sprite = sprite

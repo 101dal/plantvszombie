@@ -1,22 +1,33 @@
 # Toutes les plantes sont placées ici
-from objects.Munition import Munition
-from objects.Plant import Plant
+
+from Game import Game
+from objects.GameObjects import GameObjects
+from objects.Niveau import Level
 from objects.Plateau import Plateau
+from objects.Static import Static
 
 
-plantes = [
-    Plant(0, 1.5, Munition(0, 1, 20, "test"), 1, 1, "Peashooter", "none")
-]
+go = GameObjects()
+plants = go.plants
+zombies = go.zombies
 
 plateau = Plateau()
 
-plateau.setElement(0, 0, plantes[0])
-plateau.setElement(0, 0, plantes[0])
 
-for l in plateau.plateau:
+
+
+level = Level(1, [zombies[0]], [plants[0]], 1)
+
+game = Game(plateau)
+
+game.start_level(level)
+
+game.plateau.setElement(1,2, Static(2, "rock", "rock"))
+
+for l in game.plateau.plateau:
     for c in l:
         try:
-            print(c.name, end=" ")
+            print(c.id, end=" ")
         except:
             print(c, end=" ")
     print()
