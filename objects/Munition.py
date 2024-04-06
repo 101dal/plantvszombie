@@ -6,11 +6,17 @@ class Munition:
         self.damage = damage
         self.sprite = sprite
 
-        return
+        self.x = None
+        self.y = None
 
-    def create(self, x: float, y: float) -> None:
-        self.x = x
-        self.y = y
+    def create(self, x: float, y: float):
+        new_munition = Munition(id=self.id, speed=self.speed, damage=self.damage, sprite=self.sprite)
+        
+        new_munition.x = x
+        new_munition.y = y
+        
+        return new_munition
         
     def move(self):
-        self.x -= self.speed
+        assert (self.x is not None), "This object has not been initialized"
+        self.x += self.speed

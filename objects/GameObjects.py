@@ -17,8 +17,6 @@ class GameObjects:
             Plant(id=0, delais=1.5, munition=munitions[0], vie=1, name="Peashooter", sprite="none")
         ]
         
-        
-        
         self.zombies = zombies        
         self.munitions = munitions        
         self.plants = plants
