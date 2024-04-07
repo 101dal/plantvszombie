@@ -1,5 +1,5 @@
 import random
-from typing import Union
+from typing import Dict, List, Union
 from objects.Niveau import Level
 from objects.Plateau import Plateau
 from objects.Player import Player
@@ -33,7 +33,7 @@ class Game:
         
         return
                 
-    def gameTick(self, player: Player) -> None:
+    def gameTick(self, player: Player):
         # Increment the time by one
         self.time += 1
         
@@ -45,8 +45,22 @@ class Game:
         for munition in player.munitions:
             munition.move()
         
-        # Spawn a new zombie
-        chosen_zombie: Union[Zombie, int] =  player.zombies[random.randint(0, len(player.zombies)-1)]
+        # Spawn a new zombie if possible
+        zombies_size = len(self.level.zombies)
+        if zombies_size > 0:
+            
+            # Chose a random zombie type in the list
+            chosen_zombie_number = random.randint(0,zombies_size) - 1
+            chosen_zombie: List[Union[Zombie, int]] = self.level.zombies[chosen_zombie_number]
+            
+            
+            # Get a number between 1 and (level length / amount) to know if that zombie will spawn
+            chosen_zombie[1] -= 1 # type: ignore
+            
+            if chosen_zombie[1] <= 0:
+                del self.level.zombies[chosen_zombie_number]
+        
+        return self.level.zombies
         
         
-        return
+        

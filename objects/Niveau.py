@@ -4,7 +4,7 @@ from objects.Zombie import Zombie
 
 
 class Level:
-    def __init__(self, height: int, zombies: List[Dict[str, Union[Zombie, int]]], plants: List[Plant], waves: int ) -> None:
+    def __init__(self, height: int, zombies: List[List[Union[Zombie, int]]], plants: List[Plant], waves: int ) -> None:
         """A class to generate a new level
 
         Args:
@@ -16,6 +16,6 @@ class Level:
         assert (height % 2 == 1) and (height > 0) and (height < 5), "Heigh has to be an odd number between 1 and 5"
         
         self.height: int = height
-        self.zombies: List[Dict[str, Union[Zombie, int]]]  = zombies
+        self.zombies: List[List[Union[Zombie, int]]] = zombies
         self.plants: List[Plant] = plants
         self.waves: int = waves
