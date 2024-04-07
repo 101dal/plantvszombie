@@ -1,24 +1,24 @@
 class Zombie:
 
     def __init__(self, id: int, health: int, speed: float, name: str, sprite: str, cost: int) -> None:
-        self.id = id
+        self.id: int = id
         
-        self.health = health
-        self.speed = speed
+        self.health: int = health
+        self.speed: float = speed
         
-        self.name = name
+        self.name: str = name
         
-        self.sprite = sprite
+        self.sprite: str = sprite
         
-        self.cost = cost
+        self.cost: int = cost
         
         # Dummy positions
-        self.x = None
-        self.y = None
+        self.x: float | None = None
+        self.y: float | None = None
 
     def spawn(self, x: float, y: float):
         # Create a new zombie with the same properties as self
-        new_zombie = Zombie(id=self.id, health=self.health, speed=self.speed,
+        new_zombie: Zombie = Zombie(id=self.id, health=self.health, speed=self.speed,
                             name=self.name, sprite=self.sprite, cost=self.cost)
 
         # Set the spawn position of the new zombie

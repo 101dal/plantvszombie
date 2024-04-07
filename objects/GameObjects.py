@@ -1,3 +1,4 @@
+from typing import List
 from objects.Munition import Munition
 from objects.Plant import Plant
 from objects.Zombie import Zombie
@@ -17,6 +18,6 @@ class GameObjects:
             Plant(id=0, delais=1.5, munition=munitions[0], vie=1, name="Peashooter", sprite="none")
         ]
         
-        self.zombies = zombies        
-        self.munitions = munitions        
-        self.plants = plants
+        self.zombies: List[Zombie] = zombies        
+        self.munitions: List[Munition] = munitions        
+        self.plants: List[Plant] = plants

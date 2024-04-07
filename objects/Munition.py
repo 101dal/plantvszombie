@@ -1,16 +1,16 @@
 class Munition:
     def __init__(self, id: int, speed: float, damage: float, sprite: str) -> None:
-        self.id = id
+        self.id: int = id
 
-        self.speed = speed
-        self.damage = damage
-        self.sprite = sprite
+        self.speed: float = speed
+        self.damage: float = damage
+        self.sprite: str = sprite
 
-        self.x = None
-        self.y = None
+        self.x: float | None = None
+        self.y: float | None = None
 
     def create(self, x: float, y: float):
-        new_munition = Munition(id=self.id, speed=self.speed, damage=self.damage, sprite=self.sprite)
+        new_munition: Munition = Munition(id=self.id, speed=self.speed, damage=self.damage, sprite=self.sprite)
         
         new_munition.x = x
         new_munition.y = y

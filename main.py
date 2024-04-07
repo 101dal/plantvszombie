@@ -19,7 +19,7 @@ plateau = Plateau()
 
 
 
-level = Level(1, [zombies[0]], [plants[0]], 1)
+level = Level(height=1, zombies=[{"zombie": zombies[0], "amount": 5}], plants=[plants[0]], waves=1)
 
 game = Game(plateau)
 
@@ -29,10 +29,11 @@ game.start_level(level)
 game.plateau.setElement(1,2, Static(2, "rock", "rock"))
 
 
-# for l in game.plateau.plateau:
-#     for c in l:
-#         try:
-#             print(c.id, end=" ")
-#         except:
-#             print(c, end=" ")
-#     print()
+
+for l in game.plateau.plateau:
+    for c in l:
+        try:
+            print(c.id, end=" ")
+        except:
+            print(c, end=" ")
+    print()
