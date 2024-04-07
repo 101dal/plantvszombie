@@ -1,5 +1,6 @@
 import random
-from typing import Dict, List, Union
+from typing import Dict, List, Literal, Tuple, Union
+import typing
 from objects.Niveau import Level
 from objects.Plateau import Plateau
 from objects.Player import Player
@@ -26,10 +27,15 @@ class Game:
         """
         self.level = level
         # Get the center of the plateau (index from 0)
-        start = 2 - (level.height // 2)
-        for h in range(start, start + level.height):
+        self.start = 2 - (level.height // 2)
+        self.end = self.start + level.height
+        for h in range(self.start, self.end):
             for c in range(9):
                 self.plateau.setElement(c, h, Static(1, "Grass", "grass"))
+                
+        self.amount_of_zombies = 0
+        for z in level.zombies:
+            self.amount_of_zombies += z[1]
         
         return
                 
@@ -49,16 +55,22 @@ class Game:
         zombies_size = len(self.level.zombies)
         if zombies_size > 0:
             
+
             # Chose a random zombie type in the list
             chosen_zombie_number = random.randint(0,zombies_size) - 1
-            chosen_zombie: List[Union[Zombie, int]] = self.level.zombies[chosen_zombie_number]
+            chosen_zombie: Tuple[Zombie, int] = self.level.zombies[chosen_zombie_number]
             
             
-            # Get a number between 1 and (level length / amount) to know if that zombie will spawn
-            chosen_zombie[1] -= 1 # type: ignore
+            # Get a number between 0 and (level length / (amount of zombies to spawn)) to know if that zombie will spawn
+            if random.randint(0, round((self.level.time) // self.amount_of_zombies)) == 0:
+                player.zombies.append( chosen_zombie[0].spawn(8, random.randint(self.start, self.end)))
+                self.level.zombies[chosen_zombie_number] = (chosen_zombie[0], chosen_zombie[1] - 1)
             
-            if chosen_zombie[1] <= 0:
+            if chosen_zombie[1] <= 0: # type: ignore
                 del self.level.zombies[chosen_zombie_number]
+            
+            if len(self.level.zombies) == 0:
+                self.completed = True
         
         return self.level.zombies
         

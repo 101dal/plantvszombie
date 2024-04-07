@@ -16,7 +16,7 @@ class Zombie:
         self.x: float | None = None
         self.y: float | None = None
 
-    def spawn(self, x: float, y: float):
+    def spawn(self, x: float | int, y: float | int):
         # Create a new zombie with the same properties as self
         new_zombie: Zombie = Zombie(id=self.id, health=self.health, speed=self.speed,
                             name=self.name, sprite=self.sprite, cost=self.cost)

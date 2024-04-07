@@ -19,7 +19,7 @@ plateau = Plateau()
 
 
 
-level = Level(height=1, zombies=[[zombies[0], 5]], plants=[plants[0]], waves=1)
+level = Level(height=1, zombies=[(zombies[0], 5)], plants=[plants[0]], waves=1, time=20*30)
 
 game = Game(plateau)
 
@@ -28,13 +28,14 @@ game.start_level(level)
 
 game.plateau.setElement(1,2, Static(2, "rock", "rock"))
 
-print(game.gameTick(player))
-print(game.gameTick(player))
-print(game.gameTick(player))
-print(game.gameTick(player))
-print(game.gameTick(player))
-print(game.gameTick(player))
-print(game.gameTick(player))
+
+index = 0
+while not game.completed:
+    print(game.gameTick(player))
+    index+=1
+    print(index)
+
+print(player.zombies)
 
 
 for l in game.plateau.plateau:
