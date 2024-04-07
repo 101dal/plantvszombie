@@ -1,5 +1,6 @@
 # Toutes les plantes sont placées ici
 
+import time
 from Game import Game
 from objects.GameObjects import GameObjects
 from objects.Niveau import Level
@@ -38,10 +39,10 @@ while not game.completed:
 print(player.zombies)
 
 
-for l in game.plateau.plateau:
-    for c in l:
-        try:
-            print(c.id, end=" ")
-        except:
-            print(c, end=" ")
-    print()
+# for l in game.plateau.plateau:
+#     for c in l:
+#         try:
+#             print(c.id, end=" ")
+#         except:
+#             print(c, end=" ")
+#     print()

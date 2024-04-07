@@ -6,6 +6,8 @@ from objects.Zombie import Zombie
 
 class GameObjects:
     def __init__(self) -> None:
+        """Create a GameObjects object with all the Zombies, Munitions and Plants possible to find in the game
+        """
         zombies = [
             Zombie(id=0, health=10, speed=1, name="Zombie", sprite="zombie", cost=50)
         ]

@@ -17,6 +17,15 @@ class Zombie:
         self.y: float | None = None
 
     def spawn(self, x: float | int, y: float | int):
+        """Create a copy of the zombie with additional coordinate information
+
+        Args:
+            x (float | int): X Coord
+            y (float | int): Y Coord
+
+        Returns:
+            Zombie: The new Zombie with all the information needed
+        """
         # Create a new zombie with the same properties as self
         new_zombie: Zombie = Zombie(id=self.id, health=self.health, speed=self.speed,
                             name=self.name, sprite=self.sprite, cost=self.cost)
@@ -27,6 +36,8 @@ class Zombie:
 
         return new_zombie
 
-    def move(self):
+    def move(self) -> None:
+        """Move the Zombie if it exist
+        """
         assert (self.x is not None), "This object has not been initialized"
         self.x -= self.speed
