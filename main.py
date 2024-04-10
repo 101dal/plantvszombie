@@ -34,7 +34,7 @@ index = 0
 while not game.completed:
     print(game.gameTick(player))
     index+=1
-    print(index)
+    time.sleep(1/20)
 
 print(player.zombies)
 

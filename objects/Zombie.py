@@ -1,6 +1,13 @@
-class Zombie:
+from typing import Tuple
+from PIL import Image
+import dotenv
 
-    def __init__(self, id: int, health: int, speed: float, name: str, sprite: str, cost: int) -> None:
+from objects.TexturedObject import TexturedObject
+
+class Zombie(TexturedObject):
+    def __init__(self, id: int, health: int, speed: float, name: str, cost: int, sprite: str) -> None:
+        super().__init__(sprite=sprite)
+        
         self.id: int = id
         
         self.health: int = health
@@ -8,15 +15,15 @@ class Zombie:
         
         self.name: str = name
         
-        self.sprite: str = sprite
-        
         self.cost: int = cost
         
         # Dummy positions
         self.x: float | None = None
         self.y: float | None = None
 
-    def spawn(self, x: float | int, y: float | int):
+        return
+
+    def spawn(self, x: float, y: float):
         """Create a copy of the zombie with additional coordinate information
 
         Args:
@@ -28,7 +35,7 @@ class Zombie:
         """
         # Create a new zombie with the same properties as self
         new_zombie: Zombie = Zombie(id=self.id, health=self.health, speed=self.speed,
-                            name=self.name, sprite=self.sprite, cost=self.cost)
+                            name=self.name, cost=self.cost, sprite=self.sprite)
 
         # Set the spawn position of the new zombie
         new_zombie.x = x
@@ -41,3 +48,13 @@ class Zombie:
         """
         assert (self.x is not None), "This object has not been initialized"
         self.x -= self.speed
+
+        return
+
+    def getDrawPosition(self) -> Tuple[float,float]:
+        """Get the position to draw the drawing to using the size of the image
+        """
+
+        return (1,2)
+
+        

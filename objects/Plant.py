@@ -1,9 +1,13 @@
 from objects.Munition import Munition
+from objects.TexturedObject import TexturedObject
 
-class Plant:
+class Plant(TexturedObject):
     """Generate a Plant element"""
 
     def __init__(self, id: int, delais: float, munition: Munition, vie: int, name: str, sprite: str) -> None:
+        super().__init__(sprite=sprite)
+        
+        
         self.id: int = id
 
         self.delais: float = delais
@@ -12,8 +16,6 @@ class Plant:
         self.vie: int = vie
 
         self.name: str = name
-
-        self.sprite: str = sprite
 
         # Initialize x and y with default values
         self.x: int | None = None

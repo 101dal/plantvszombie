@@ -1,10 +1,14 @@
-class Munition:
+from objects.TexturedObject import TexturedObject
+
+
+class Munition(TexturedObject):
     def __init__(self, id: int, speed: float, damage: float, sprite: str) -> None:
+        super().__init__(sprite=sprite)
+        
         self.id: int = id
 
         self.speed: float = speed
         self.damage: float = damage
-        self.sprite: str = sprite
 
         self.x: float | None = None
         self.y: float | None = None

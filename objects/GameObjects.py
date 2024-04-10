@@ -13,13 +13,13 @@ class GameObjects:
         ]
         
         munitions = [
-            Munition(id=0, speed=1, damage=20, sprite="test")
+            Munition(id=0, speed=1, damage=20, sprite="zombie")
         ]
         
         plants = [
-            Plant(id=0, delais=1.5, munition=munitions[0], vie=1, name="Peashooter", sprite="none")
+            Plant(id=0, delais=1.5, munition=munitions[0], vie=1, name="Peashooter", sprite="zombie")
         ]
         
-        self.zombies: List[Zombie] = zombies        
-        self.munitions: List[Munition] = munitions        
+        self.zombies: List[Zombie] = zombies
+        self.munitions: List[Munition] = munitions
         self.plants: List[Plant] = plants

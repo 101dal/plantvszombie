@@ -1,5 +1,5 @@
+import dotenv
 from objects.GameObjects import GameObjects
-
 
 go = GameObjects()
 plants = go.plants
@@ -11,7 +11,6 @@ plant2 = plants[0].plant(0,1)
 
 print(f"Plant1: x={plant1.x} ; y={plant1.y}")
 print(f"Plant2: x={plant2.x} ; y={plant2.y}")
-
 
 ammo1 = plant1.spawnAmmo()
 ammo2 = plant1.spawnAmmo()
