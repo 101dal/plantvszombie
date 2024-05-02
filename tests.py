@@ -1,4 +1,3 @@
-import dotenv
 from objects.GameObjects import GameObjects
 
 go = GameObjects()
