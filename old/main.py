@@ -32,7 +32,7 @@ game.plateau.setElement(1,2, Static(2, "rock", "rock"))
 
 index = 0
 while not game.completed:
-    print(game.gameTick(player))
+    print(game.gameTick(player), index)
     index+=1
     time.sleep(1/20)
 
