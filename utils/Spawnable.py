@@ -1,3 +1,6 @@
+import random
+
+
 class Spawnable:
     def __init__(self, x: float=-1, y: float=-1) -> None:
         """Class template for every entity that can be spawned
@@ -5,6 +8,11 @@ class Spawnable:
         
         self.x = x
         self.y = y
+        
+        # Define a unique uuid
+        letters = "abcdefghijklmnopqrstuvwxyz0123456789"
+        self.unique_id: str = "".join([letters[random.randint(0, 35)] for _ in range(16)])
+    
     
     def spawn(self, x:float, y:float):
         """Create a copy of itself with the x and y coords information

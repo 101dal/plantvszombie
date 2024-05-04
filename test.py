@@ -8,7 +8,6 @@ from utils.TexturedObject import TexturedObject
 import settings
 
 
-
 # Define all the different textures
 texture1 = TexturedObject(["assets/test.jpg"], 1, 0)
 texture2 = TexturedObject(["assets/test.jpg"], 1, 0)
