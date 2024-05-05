@@ -93,9 +93,11 @@ class Level:
         if len(self.suns_spawn_times) > 0:
             self.spawnSuns()
         if len(self.zombie_spawn_times) > 0:
-            self.spawnZombies()    
+            self.spawnZombies()
+        
+        self.textures() 
         self.tickEntities()    
-            
+
     def spawnZombies(self) -> None:
         firstZombie = self.zombie_spawn_times[0]
         if firstZombie[0] == self.time:
@@ -111,7 +113,7 @@ class Level:
         firstSuns = self.suns_spawn_times[0]
         if firstSuns == self.time:
             
-            spawned: Sun = GameObjects.suns[0].spawn(random.randint(0,7), 5)
+            spawned: Sun = GameObjects.suns[0].spawn(random.randrange(0,7), 0)
             
             self.alive_suns.append(spawned)
             self.suns_spawn_times.pop(0)
@@ -188,6 +190,25 @@ class Level:
 
         
         
+        return
+    
+    def textures(self) -> None:
+        # Make so that the texture changes every 1/10 of a second
+        if not self.time%(settings.TICKS_PER_SECOND*(1/10))==0:
+            return
+        
+        for zombie in self.alive_zombies:
+            zombie.texture.next_frame()
+            
+        for plant in self.alive_plants:
+            plant.texture.next_frame()
+            
+        for munition in self.alive_munitions:
+            munition.texture.next_frame()
+        
+        for sun in self.alive_suns:
+            sun.texture.next_frame()
+            
         return
 
     def increase_suns(self, amount: int) -> None:

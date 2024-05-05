@@ -1,8 +1,29 @@
+# LEVEL CREATION
+from Level import Level
+import utils.GameObjects as GameObjects
+import settings
+
+level = Level([(GameObjects.zombies[0], 10)], [GameObjects.plants[0]], settings.TICKS_PER_SECOND*60, 1)
+
+level.initialize()
+
+level.addPlant(0, 0, 2)
+
+
+
+# IMAGE SHOWING LOGIC
+
+# IMAGE SHOWING LOGIC
+
 import pygame
+import time
+from Level import Level
+import utils.GameObjects as GameObjects
+import settings
 
 # Grid dimensions
-GRID_ROWS = 6
-GRID_COLS = 7
+GRID_ROWS = 5
+GRID_COLS = 8
 SQUARE_SIZE = 200  # Size of each grid square in pixels
 
 # Margin parameters
@@ -28,9 +49,10 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Grid Example")
 clock = pygame.time.Clock()
 
-# Initialize the black points list
-black_points = []
-dragging = False
+# LEVEL CREATION
+level = Level([(GameObjects.zombies[0], 10)], [GameObjects.plants[0]], settings.TICKS_PER_SECOND*60, 1)
+level.initialize()
+level.addPlant(0, 0, 2)
 
 def draw_grid():
     # Fill the background with black
@@ -41,13 +63,8 @@ def draw_grid():
         for col in range(GRID_COLS):
             x = col * SQUARE_SIZE + LEFT_MARGIN
             y = row * SQUARE_SIZE + TOP_MARGIN
-            square_color = GREEN if row == 0 else BLUE
+            square_color = GREEN if col == 0 else BLUE
             pygame.draw.rect(screen, square_color, (x, y, SQUARE_SIZE, SQUARE_SIZE))
-
-    # Draw the black points
-    for point in black_points:
-        x, y = point
-        pygame.draw.circle(screen, BLACK, (x, y), SQUARE_SIZE // 4)
 
     # Draw the grid lines
     for row in range(GRID_ROWS + 1):
@@ -58,45 +75,24 @@ def draw_grid():
         x = col * SQUARE_SIZE + LEFT_MARGIN
         pygame.draw.line(screen, WHITE, (x, TOP_MARGIN), (x, WINDOW_HEIGHT - BOTTOM_MARGIN), 2)
 
-# Game loop
 running = True
 while running:
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # Left mouse button
-                mouse_x, mouse_y = event.pos
-                col = (mouse_x - LEFT_MARGIN) // SQUARE_SIZE
-                row = (mouse_y - TOP_MARGIN) // SQUARE_SIZE
-
-                # Check if the click is on a green square
-                if row == 0:
-                    dragging = True
-                    square_x = col * SQUARE_SIZE + LEFT_MARGIN
-                    square_y = row * SQUARE_SIZE + TOP_MARGIN
-                    pygame.draw.rect(screen, DARK_GREEN, (square_x, square_y, SQUARE_SIZE, SQUARE_SIZE))
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:  # Left mouse button
-                if dragging:
-                    dragging = False
-                    mouse_x, mouse_y = event.pos
-                    col = (mouse_x - LEFT_MARGIN) // SQUARE_SIZE
-                    row = (mouse_y - TOP_MARGIN) // SQUARE_SIZE
-
-                    # Check if the drop is on a blue square
-                    if row > 0:
-                        # Snap the black point to the center of the square
-                        black_points.append((col * SQUARE_SIZE + LEFT_MARGIN + SQUARE_SIZE // 2,
-                                             row * SQUARE_SIZE + TOP_MARGIN + SQUARE_SIZE // 2))
 
     # Draw the grid
     draw_grid()
 
+    # Draw all the alive plants, suns, munitions, and zombies
+
     # Update the display
     pygame.display.flip()
-    clock.tick(60)  # Limit the frame rate
+
+    # Update the game every tick
+    level.tick()
+    time.sleep(settings.TIME_PER_TICK*1.5)
 
 # Quit Pygame
 pygame.quit()
