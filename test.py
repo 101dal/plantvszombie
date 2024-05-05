@@ -3,17 +3,25 @@ from Level import Level
 from creatures.Zombie import Zombie
 from creatures.Plant import Plant
 from creatures.Munition import Munition
+from utils.AnimationFrame import AnimationFrame
 from utils.TexturedObject import TexturedObject
 
 import settings
 
 
 # Define all the different textures
-texture1 = TexturedObject(["assets/test.jpg"], 1, 0)
-texture2 = TexturedObject(["assets/test.jpg"], 1, 0)
-texture3 = TexturedObject(["assets/test.jpg"], 1, 0)
-texture4 = TexturedObject(["assets/test.jpg"], 1, 0)
+animationFrame1 = AnimationFrame(["assets/background.png"])
+animationFrame2 = AnimationFrame(["assets/background.png"])
+animationFrame3 = AnimationFrame(["assets/background.png"])
+animationFrame4 = AnimationFrame(["assets/background.png"])
 
+def conditionner(data):
+    return 0
+
+texture1 = TexturedObject([animationFrame1], conditionner=conditionner, base_animation_index=0)
+texture2 = TexturedObject([animationFrame2], conditionner=conditionner, base_animation_index=0)
+texture3 = TexturedObject([animationFrame3], conditionner=conditionner, base_animation_index=0)
+texture4 = TexturedObject([animationFrame4], conditionner=conditionner, base_animation_index=0)
 
 # Define the zombies
 zombie1 = Zombie(
@@ -22,7 +30,8 @@ zombie1 = Zombie(
     hitbox=(2, 2),
     speed=0.1,
     health=20, 
-    damage=10)
+    damage=10,
+    score=10)
 
 zombie2 = Zombie(
     name="Zombie2",
@@ -30,7 +39,8 @@ zombie2 = Zombie(
     hitbox=(2, 2),
     speed=0.1,
     health=20, 
-    damage=10)
+    damage=10,
+    score=10)
 
 # Define the plants
 plant1 = Plant(

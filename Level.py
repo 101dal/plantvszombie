@@ -5,6 +5,7 @@ from creatures.Munition import Munition
 from creatures.Plant import Plant
 from creatures.Zombie import Zombie
 from creatures.Sun import Sun
+from utils.AnimationFrame import AnimationFrame
 from utils.TexturedObject import TexturedObject
 
 import settings
@@ -22,6 +23,7 @@ class Level:
         """
         assert len(plants) <= 6, "There should not be more than 6 plants"
         assert height%2 == 1, "The height of the level should be odd"
+        assert 0<len(plants)<=7, "The number of plants should be between 1 and 7"
         
         self.all_zombies = zombies
         self.plants = plants
@@ -30,8 +32,10 @@ class Level:
         self.start = 2 - height//2
         self.end = self.start + height - 1
         
-        # Define the amount of suns at the beginning of the level as 0
-        self.suns = 0
+        # Define the amount of currencies
+        self.suns: int = 0
+        self.score: int = 0
+        
         
         # The tick of the level
         self.time = 0
@@ -106,7 +110,9 @@ class Level:
     def spawnSuns(self) -> None:
         firstSuns = self.suns_spawn_times[0]
         if firstSuns == self.time:
-            spawned: Sun = Sun(50, TexturedObject(["assets/test.jpg"])).spawn(random.randint(0,7), 5)
+            
+            spawned: Sun = Sun(50, TexturedObject([AnimationFrame(["assets/background.png"])])).spawn(random.randint(0,7), 5)
+            
             self.alive_suns.append(spawned)
             self.suns_spawn_times.pop(0)
             if settings.DEBUG:
@@ -144,7 +150,10 @@ class Level:
         for zombie in self.alive_zombies:
             zombie.move()
             if zombie.health <= 0:
+                self.increase_score(zombie.score)
+                
                 self.alive_zombies.remove(zombie)
+                
                 
                 if settings.DEBUG:
                     print(f"Zombie killed at {self.time} in X: {zombie.x} ; Y: {zombie.y}")
@@ -156,5 +165,15 @@ class Level:
             if possible_munition:
                 self.alive_munitions.append(possible_munition)
         
+        
+        return
+
+    def increase_suns(self, amount: int) -> None:
+        self.suns += amount
+        
+        return
+    
+    def increase_score(self, amount: int) -> None:
+        self.score += amount
         
         return

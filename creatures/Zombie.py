@@ -7,7 +7,7 @@ from utils.TexturedObject import TexturedObject
 
 
 class Zombie(Spawnable):
-    def __init__(self, name: str, texture: TexturedObject, hitbox: Tuple[int, int], speed: float, health: int, damage: int) -> None:
+    def __init__(self, name: str, texture: TexturedObject, hitbox: Tuple[int, int], speed: float, health: int, damage: int, score: int) -> None:
         """Class to create a Zombie
 
         Args:
@@ -17,6 +17,7 @@ class Zombie(Spawnable):
             speed (float): The speed of the zombie
             health (int): The amound of health the Zombie has
             damage (int): The amount of damage the Zombie deals
+            score (int): The score the Zombie gives on death
         """
         
         super().__init__()
@@ -29,6 +30,8 @@ class Zombie(Spawnable):
         
         self.health = health
         self.damage = damage
+        
+        self.score = score
 
         return    
     

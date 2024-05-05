@@ -1,7 +1,78 @@
-from typing import List 
+import os
+from typing import Callable, List 
 from PIL import Image
+import pygame
+
+from utils.AnimationFrame import AnimationFrame
+
 
 class TexturedObject:
+    def __init__(self, animations: List[AnimationFrame], conditionner: Callable[[any], int] | None = None, base_animation_index: int = 0) -> None:
+        """Class template for every textured object
+
+        Args:
+            animations (List[AnimationFrame]): A Tuple of all the possible animations. Defaults to None
+            conditionner: (Callable[[any], int] | None): A function that takes in input a data and the return a value which is the current animation that is supposed to be playing
+            base_animation_index (int, optional): The index of the base animation (every times an animation finished it returns to that one if no condition is provided). Defaults to 0.
+        """
+        assert len(animations) > 0, "There is to be at minimum 1 animation"
+        
+        self.animations = animations
+        self.base_animation_index = base_animation_index
+        
+        self.current_animation = self.animations[0]
+        self.current_animation_index = base_animation_index
+        
+        # Define the conditionner
+        self.conditionner = conditionner
+        
+        return
+    
+    def next_frame(self, data: any) -> bool:
+        """Function to go to the next frame of the animation
+
+        Returns:
+            bool: Return True if the animation just ended and False otherwise
+        """
+        # Check the current animation
+        should_be_current = self.check_current_animation(data)
+        
+        if should_be_current != self.current_animation_index:
+            self.current_animation.reset()
+            self.current_animation = self.animations[should_be_current]
+            
+        result = self.current_animation.next_frame()
+        
+        # If it is the end of the previous animation then restart to the base animation
+        if result:
+            self.current_animation.reset()
+            self.current_animation = self.animations[self.base_animation_index]
+            
+            return True
+        
+        return False
+    
+    def check_current_animation(self, data: any) -> int:
+        """Check what animation should be playing right no
+
+        Args:
+            data (any): The data given to check for the animation
+            function (Callable): The function used to check for the animation
+        """
+        
+        # If there is no data or no function then return the base animation
+        if (data == None) or (self.conditionner == None):
+            return self.base_animation_index
+        # Return the result of the function
+        result = self.conditionner(data)
+        
+        # Check if the result of the animation enters the bounds of the possible animations
+        if (result < 0) or (result > len(self.animations)-1):
+            raise "The animation function passed is not correct"
+        
+        return result
+        
+class TexturedObject2:
     def __init__(self, textures_urls: List[str], animation_length: int = 1, texture_start: int = 0) -> None:
         """Class template for every textured object
 
@@ -13,19 +84,19 @@ class TexturedObject:
         # Map all the textures in a tuple by opening them with PIL
         assert len(textures_urls) > 0, "There cannot be no texture"
         assert animation_length > 0, "The animation has to be minimum 1 frame"
-        self.textures = tuple(map(Image.open, textures_urls))
+        self.textures = tuple(pygame.image.load(os.path.join(texture_url)) for texture_url in textures_urls)
         
         self.animation_length = animation_length
         
         self.texture_start = texture_start
         self.index = self.texture_start
-        self.current_texure = self.textures[self.index]
+        self.current_texture = self.textures[self.index]
         return
     
     def next_texture(self) -> None:
         self.index += 1
         if self.index > self.texture_start + self.animation_length:
             self.index = self.texture_start
-        self.current_texure = self.textures[self.index]
+        self.current_texture = self.textures[self.index]
         
         return

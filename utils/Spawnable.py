@@ -11,7 +11,8 @@ class Spawnable:
         
         # Define a unique uuid
         letters = "abcdefghijklmnopqrstuvwxyz0123456789"
-        self.unique_id: str = "".join([letters[random.randint(0, 35)] for _ in range(16)])
+        uuid = "".join([letters[random.randint(0, 35)] for _ in range(16)])
+        self.uuid: str = uuid
     
     
     def spawn(self, x:float, y:float):
@@ -24,7 +25,7 @@ class Spawnable:
         arguments = {}
         for k in self.__dict__:
             k = str(k)
-            if k=='x' or k=='y' or k=='time':
+            if k=='x' or k=='y' or k=='time' or k=='uuid':
                 continue
             arguments[k] = self.__dict__.get(k)
         new_spawnable = self.__class__(**arguments)  # Create a new instance of the same class with the same arguments
