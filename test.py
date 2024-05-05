@@ -61,7 +61,7 @@ plant2 = Plant(
     cost=50)
 
 # Create the level
-level = Level([(zombie1, 10), (zombie2, 20)], [plant1, plant2], settings.GAME_TICK*60, 1)
+level = Level([(zombie1, 10), (zombie2, 20)], [plant1, plant2], settings.TICKS_PER_SECOND*60, 1)
 
 # Initialize the level
 level.initialize()

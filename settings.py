@@ -1,4 +1,6 @@
 DEBUG=True
 
-# Amount of ticks per second
-GAME_TICK=20
+
+TICKS_PER_SECOND=20 # Amount of ticks per second
+
+TIME_PER_TICK = 1/TICKS_PER_SECOND
