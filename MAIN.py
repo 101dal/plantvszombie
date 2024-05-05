@@ -24,7 +24,7 @@ import settings
 # Grid dimensions
 GRID_ROWS = 5
 GRID_COLS = 8
-SQUARE_SIZE = 200  # Size of each grid square in pixels
+SQUARE_SIZE = 27  # Size of each grid square in pixels
 
 # Margin parameters
 TOP_MARGIN = 50

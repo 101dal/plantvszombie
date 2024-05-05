@@ -8,12 +8,14 @@ import utils.GameObjects as GameObjects
 
 
 # Create the level
-level = Level([(GameObjects.zombies[0], 10)], [GameObjects.plants[0]], settings.TICKS_PER_SECOND*60, 1)
+level = Level([(GameObjects.zombies[0], 10)], [GameObjects.plants[0]], settings.TICKS_PER_SECOND*60*3, 1)
 
 # Initialize the level
 level.initialize()
 
 level.addPlant(0, 0, 2)
+level.addPlant(0, 1, 2)
+level.addPlant(0, 2, 2)
 
 print(level.start)
 print(level.end)
@@ -29,4 +31,4 @@ while True:
     if len(level.zombie_spawn_times) == 0:
         break
     e+=1
-    #time.sleep(settings.TIME_PER_TICK)
+    time.sleep(settings.TIME_PER_TICK)

@@ -79,7 +79,7 @@ zombies = [
         ),
         hitbox=(1,1),
         speed=settings.TIME_PER_TICK/2, # 0.5 block per second
-        health=500,
+        health=200,
         damage=15,
         attack_speed=settings.TICKS_PER_SECOND, # 1 attack per second
         score=10

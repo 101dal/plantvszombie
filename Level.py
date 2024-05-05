@@ -101,7 +101,7 @@ class Level:
     def spawnZombies(self) -> None:
         firstZombie = self.zombie_spawn_times[0]
         if firstZombie[0] == self.time:
-            spawned: Zombie = firstZombie[1].spawn(7, random.randint(self.start, self.end))
+            spawned: Zombie = firstZombie[1].spawn(9, random.randint(self.start, self.end))
             self.alive_zombies.append(spawned)
             self.zombie_spawn_times.pop(0)
             if settings.DEBUG:
@@ -113,7 +113,7 @@ class Level:
         firstSuns = self.suns_spawn_times[0]
         if firstSuns == self.time:
             
-            spawned: Sun = GameObjects.suns[0].spawn(random.randrange(0,7), 0)
+            spawned: Sun = GameObjects.suns[0].spawn(random.randrange(0,9), 0)
             
             self.alive_suns.append(spawned)
             self.suns_spawn_times.pop(0)
