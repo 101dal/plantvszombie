@@ -24,6 +24,9 @@ class Zombie(Spawnable):
         
         self.name = name
         self.texture = texture
+        # Pass the parent to the child
+        self.texture.element = self
+        
         self.hitbox = hitbox
         
         self.speed = speed

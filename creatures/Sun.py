@@ -7,5 +7,7 @@ class Sun(Spawnable):
         
         self.value = value
         self.texture = texture
+        # Pass the parent to the child
+        self.texture.element = self
         
         return

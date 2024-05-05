@@ -13,8 +13,7 @@ class AnimationFrame:
         """
         assert len(frames_urls) > 0, "There is to be minimum 1 frame in the animation"
         
-        self.frames = [tuple(pygame.image.load(os.path.join("assets", texture_url)) for texture_url in frames_urls)]
-        
+        self.frames = tuple(pygame.image.load(os.path.join("assets", texture_url)) for texture_url in frames_urls)
         self.duration = len(self.frames)
         self.time = 0
         

@@ -1,6 +1,5 @@
 import os
-from typing import Callable, List 
-from PIL import Image
+from typing import Callable, List
 import pygame
 
 from utils.AnimationFrame import AnimationFrame
@@ -28,18 +27,21 @@ class TexturedObject:
         
         return
     
-    def next_frame(self, data: any) -> bool:
+    def next_frame(self) -> bool:
         """Function to go to the next frame of the animation
 
         Returns:
             bool: Return True if the animation just ended and False otherwise
         """
         # Check the current animation
-        should_be_current = self.check_current_animation(data)
+        should_be_current = self.check_current_animation()
         
         if should_be_current != self.current_animation_index:
             self.current_animation.reset()
-            self.current_animation = self.animations[should_be_current]
+            self.current_animation_index = should_be_current
+            self.current_animation = self.animations[self.current_animation_index]
+            print("changed")
+        
             
         result = self.current_animation.next_frame()
         
@@ -52,19 +54,18 @@ class TexturedObject:
         
         return False
     
-    def check_current_animation(self, data: any) -> int:
+    def check_current_animation(self) -> int:
         """Check what animation should be playing right no
 
         Args:
-            data (any): The data given to check for the animation
             function (Callable): The function used to check for the animation
         """
         
-        # If there is no data or no function then return the base animation
-        if (data == None) or (self.conditionner == None):
+        # If there is no function then return the base animation
+        if (self.conditionner == None):
             return self.base_animation_index
         # Return the result of the function
-        result = self.conditionner(data)
+        result = self.conditionner(self)
         
         # Check if the result of the animation enters the bounds of the possible animations
         if (result < 0) or (result > len(self.animations)-1):

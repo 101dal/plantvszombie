@@ -19,6 +19,9 @@ class Munition(Spawnable):
         
         self.name = name
         self.texture = texture
+        # Pass the parent to the child
+        self.texture.element = self
+        
         self.speed = speed
         self.damage = damage
         self.radius = radius
