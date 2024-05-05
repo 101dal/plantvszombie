@@ -40,7 +40,6 @@ class TexturedObject:
             self.current_animation.reset()
             self.current_animation_index = should_be_current
             self.current_animation = self.animations[self.current_animation_index]
-            print("changed")
         
             
         result = self.current_animation.next_frame()

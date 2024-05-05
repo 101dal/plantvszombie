@@ -25,7 +25,7 @@ class Spawnable:
         arguments = {}
         for k in self.__dict__:
             k = str(k)
-            if k=='x' or k=='y' or k=='time' or k=='uuid':
+            if k=='x' or k=='y' or k=='time' or k=='uuid' or k=='eating':
                 continue
             arguments[k] = self.__dict__.get(k)
         new_spawnable = self.__class__(**arguments)  # Create a new instance of the same class with the same arguments

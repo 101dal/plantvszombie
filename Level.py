@@ -5,8 +5,8 @@ from creatures.Munition import Munition
 from creatures.Plant import Plant
 from creatures.Zombie import Zombie
 from creatures.Sun import Sun
-from utils.AnimationFrame import AnimationFrame
-from utils.TexturedObject import TexturedObject
+
+import utils.GameObjects as GameObjects
 
 import settings
 
@@ -60,7 +60,7 @@ class Level:
         """
         # There will be by default 1 sun for every 10 seconds
         self.suns_spawn_times: List[int] = []
-        total_suns: int = int(self.duration / (settings.GAME_TICK * 10))
+        total_suns: int = int(self.duration / (settings.TICKS_PER_SECOND * 10))
         for _ in range(total_suns):
             self.suns_spawn_times.append(random.randint(0, self.duration))
         
@@ -111,7 +111,7 @@ class Level:
         firstSuns = self.suns_spawn_times[0]
         if firstSuns == self.time:
             
-            spawned: Sun = Sun(50, TexturedObject([AnimationFrame(["assets/background.png"])])).spawn(random.randint(0,7), 5)
+            spawned: Sun = GameObjects.suns[0].spawn(random.randint(0,7), 5)
             
             self.alive_suns.append(spawned)
             self.suns_spawn_times.pop(0)
@@ -120,8 +120,15 @@ class Level:
         
         return
     
-    def addPlant(self, plant: Plant, x: int, y: int) -> None:
-        spawned: Plant = plant.spawn(x, y)
+    def addPlant(self, plant_index: int, x: int, y: int) -> None:
+        """Add the Plant with index in the Plants array to the world
+
+        Args:
+            plant_index (Plant): The index of the plant
+            x (int): The X coord
+            y (int): The Y coord
+        """
+        spawned: Plant = self.plants[plant_index].spawn(x, y)
         
         self.alive_plants.append(spawned)
         
@@ -157,6 +164,20 @@ class Level:
                 
                 if settings.DEBUG:
                     print(f"Zombie killed at {self.time} in X: {zombie.x} ; Y: {zombie.y}")
+                    
+        # Check for collisions between zombies and plants
+        for zombie in self.alive_zombies:
+            for plant in self.alive_plants:
+                if zombie.is_colliding_with_plant(plant) and self.time%zombie.attack_speed == 0:
+                    if settings.DEBUG:
+                        print(f"Zombie with uuid {zombie.uuid} is colliding Plant with uuid {plant.uuid}. New plant's health : {plant.health}")
+                    plant.take_damage(zombie.damage)
+                    
+                    if plant.health <= 0:
+                        if settings.DEBUG:
+                            print(f"Plant with uuid {plant.uuid} has been killed")
+                        self.alive_plants.remove(plant)
+                    break  # A zombie can only attack one plant at a time
             
         # Perform all the Plants' actions
         for plant in self.alive_plants:
@@ -164,6 +185,7 @@ class Level:
             
             if possible_munition:
                 self.alive_munitions.append(possible_munition)
+
         
         
         return

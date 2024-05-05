@@ -36,7 +36,5 @@ class Munition(Spawnable):
     def checkZombies(self) -> bool:
         for zombie in self.zombies:
             if zombie.isInHitbox(self):
-                if settings.DEBUG:
-                    print(f"A Munition has touched a Zombie at X: {self.x} ; Y: {self.y}")
                 return True
         return False

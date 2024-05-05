@@ -4,11 +4,23 @@
 
 from creatures.Munition import Munition
 from creatures.Plant import Plant
+from creatures.Sun import Sun
 from creatures.Zombie import Zombie
 from utils.AnimationFrame import AnimationFrame
 from utils.TexturedObject import TexturedObject
 
 import settings
+
+suns = [
+    Sun(
+        value=50,
+        texture=TexturedObject(
+            animations=[
+                AnimationFrame(["sun/1.png", "sun/2.png"])
+            ]
+        )
+    )
+]
 
 
 plants = [
@@ -42,12 +54,10 @@ plants = [
 
 def basic_zombie_conditionner(self) -> int:
     """Conditionner for basic Zombie
-
-    Args:
-        self: Refering to the class (as a normal self in a class of the Zombie)
     """
+    zombie: Zombie = self.element
     
-    if self.element.health < 200:
+    if zombie.health < 200:
         return 1
     else:
         return 0
@@ -70,9 +80,8 @@ zombies = [
         hitbox=(1,1),
         speed=settings.TIME_PER_TICK/2, # 0.5 block per second
         health=500,
-        damage=30,
+        damage=15,
+        attack_speed=settings.TICKS_PER_SECOND, # 1 attack per second
         score=10
     ),
 ]
-
-zombies[0].spawn(10,10).texture.next_frame()

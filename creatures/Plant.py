@@ -64,3 +64,8 @@ class Plant(Spawnable):
                     return spawned
             
         return
+    
+    def take_damage(self, damage: int) -> None:
+        self.health -= damage
+        if self.health <= 0:
+            self.alive = False

@@ -16,7 +16,7 @@ fi
 > all_files.txt
 
 # Parcourir récursivement le répertoire et lister les fichiers Python (sauf all.sh et .git)
-find "$1" -type f \( ! -name "all.sh" ! -name "*.jpg" ! -path "*/.git/*" \) -exec bash -c '
+find "$1" -type f \( -name "*.py" ! -name "all.sh" ! -name "all_files.txt" ! -path "*/.git/*" ! -path "*/assets/*" \) -exec bash -c '
     echo "nom: $(basename "$0")" >> all_files.txt
     echo "-----" >> all_files.txt
     cat "$0" >> all_files.txt
