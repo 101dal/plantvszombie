@@ -2,73 +2,20 @@ nom: test.py
 -----
 import time
 from Level import Level
-from creatures.Zombie import Zombie
-from creatures.Plant import Plant
-from creatures.Munition import Munition
-from utils.AnimationFrame import AnimationFrame
-from utils.TexturedObject import TexturedObject
+
 
 import settings
 
+import utils.GameObjects as GameObjects
 
-# Define all the different textures
-animationFrame1 = AnimationFrame(["assets/background.png"])
-animationFrame2 = AnimationFrame(["assets/background.png"])
-animationFrame3 = AnimationFrame(["assets/background.png"])
-animationFrame4 = AnimationFrame(["assets/background.png"])
-
-def conditionner(data):
-    return 0
-
-texture1 = TexturedObject([animationFrame1], conditionner=conditionner, base_animation_index=0)
-texture2 = TexturedObject([animationFrame2], conditionner=conditionner, base_animation_index=0)
-texture3 = TexturedObject([animationFrame3], conditionner=conditionner, base_animation_index=0)
-texture4 = TexturedObject([animationFrame4], conditionner=conditionner, base_animation_index=0)
-
-# Define the zombies
-zombie1 = Zombie(
-    name="Zombie1",
-    texture=texture1,
-    hitbox=(2, 2),
-    speed=0.1,
-    health=20, 
-    damage=10,
-    score=10)
-
-zombie2 = Zombie(
-    name="Zombie2",
-    texture=texture2,
-    hitbox=(2, 2),
-    speed=0.1,
-    health=20, 
-    damage=10,
-    score=10)
-
-# Define the plants
-plant1 = Plant(
-    name="Plant1",
-    texture=texture3,
-    hitbox=(2, 2),
-    munition=Munition("Munition1", 10, 0.1, 5, 5),
-    speed=10,
-    health=2,
-    cost=2)
-plant2 = Plant(
-    name="Plant2",
-    texture=texture4,
-    hitbox=(2, 2),
-    munition=Munition("Munition2", 10, 0.1, 5, 5),
-    speed=10,
-    health=50,
-    cost=50)
 
 # Create the level
-level = Level([(zombie1, 10), (zombie2, 20)], [plant1, plant2], settings.TICKS_PER_SECOND*60, 1)
+level = Level([(GameObjects.zombies[0], 10)], [GameObjects.plants[0]], settings.TICKS_PER_SECOND*60, 1)
 
 # Initialize the level
 level.initialize()
 
-level.addPlant(plant1, 0, 2)
+level.addPlant(0, 0, 2)
 
 print(level.start)
 print(level.end)
@@ -78,11 +25,13 @@ for t in level.zombie_spawn_times:
 
 time.sleep(1)
     
+e = 0
 while True:
     level.tick()
     if len(level.zombie_spawn_times) == 0:
         break
-    #time.sleep(1/settings.GAME_TICK)
+    e+=1
+    #time.sleep(settings.TIME_PER_TICK)
 -----
 nom: GameObjects.py
 -----
@@ -92,11 +41,23 @@ nom: GameObjects.py
 
 from creatures.Munition import Munition
 from creatures.Plant import Plant
+from creatures.Sun import Sun
 from creatures.Zombie import Zombie
 from utils.AnimationFrame import AnimationFrame
 from utils.TexturedObject import TexturedObject
 
 import settings
+
+suns = [
+    Sun(
+        value=50,
+        texture=TexturedObject(
+            animations=[
+                AnimationFrame(["sun/1.png", "sun/2.png"])
+            ]
+        )
+    )
+]
 
 
 plants = [
@@ -156,12 +117,11 @@ zombies = [
         hitbox=(1,1),
         speed=settings.TIME_PER_TICK/2, # 0.5 block per second
         health=500,
-        damage=30,
+        damage=15,
+        attack_speed=settings.TICKS_PER_SECOND, # 1 attack per second
         score=10
     ),
 ]
-
-zombies[0].spawn(10,10).texture.next_frame()
 -----
 nom: mathematics.py
 -----
@@ -248,7 +208,7 @@ class Spawnable:
         arguments = {}
         for k in self.__dict__:
             k = str(k)
-            if k=='x' or k=='y' or k=='time' or k=='uuid':
+            if k=='x' or k=='y' or k=='time' or k=='uuid' or k=='eating':
                 continue
             arguments[k] = self.__dict__.get(k)
         new_spawnable = self.__class__(**arguments)  # Create a new instance of the same class with the same arguments
@@ -300,7 +260,6 @@ class TexturedObject:
             self.current_animation.reset()
             self.current_animation_index = should_be_current
             self.current_animation = self.animations[self.current_animation_index]
-            print("changed")
         
             
         result = self.current_animation.next_frame()
@@ -362,111 +321,6 @@ class TexturedObject2:
         
         return
 -----
-nom: test2.py
------
-import pygame
-
-# Grid dimensions
-GRID_ROWS = 6
-GRID_COLS = 7
-SQUARE_SIZE = 50  # Size of each grid square in pixels
-
-# Margin parameters
-TOP_MARGIN = 50
-BOTTOM_MARGIN = 50
-LEFT_MARGIN = 100
-RIGHT_MARGIN = 100
-
-# Colors
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-DARK_GREEN = (0, 128, 0)
-
-# Calculate the size of the Pygame window
-WINDOW_WIDTH = (GRID_COLS * SQUARE_SIZE) + LEFT_MARGIN + RIGHT_MARGIN
-WINDOW_HEIGHT = (GRID_ROWS * SQUARE_SIZE) + TOP_MARGIN + BOTTOM_MARGIN
-
-# Initialize Pygame
-pygame.init()
-screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption("Grid Example")
-clock = pygame.time.Clock()
-
-# Initialize the black points list
-black_points = []
-dragging = False
-
-def draw_grid():
-    # Fill the background with black
-    screen.fill(BLACK)
-
-    # Draw the grid squares
-    for row in range(GRID_ROWS):
-        for col in range(GRID_COLS):
-            x = col * SQUARE_SIZE + LEFT_MARGIN
-            y = row * SQUARE_SIZE + TOP_MARGIN
-            square_color = GREEN if row == 0 else BLUE
-            pygame.draw.rect(screen, square_color, (x, y, SQUARE_SIZE, SQUARE_SIZE))
-
-    # Draw the black points
-    for point in black_points:
-        x, y = point
-        pygame.draw.circle(screen, BLACK, (x, y), SQUARE_SIZE // 4)
-
-    # Draw the grid lines
-    for row in range(GRID_ROWS + 1):
-        y = row * SQUARE_SIZE + TOP_MARGIN
-        pygame.draw.line(screen, WHITE, (LEFT_MARGIN, y), (WINDOW_WIDTH - RIGHT_MARGIN, y), 2)
-
-    for col in range(GRID_COLS + 1):
-        x = col * SQUARE_SIZE + LEFT_MARGIN
-        pygame.draw.line(screen, WHITE, (x, TOP_MARGIN), (x, WINDOW_HEIGHT - BOTTOM_MARGIN), 2)
-
-# Game loop
-running = True
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # Left mouse button
-                mouse_x, mouse_y = event.pos
-                col = (mouse_x - LEFT_MARGIN) // SQUARE_SIZE
-                row = (mouse_y - TOP_MARGIN) // SQUARE_SIZE
-
-                # Check if the click is on a green square
-                if row == 0:
-                    dragging = True
-                    square_x = col * SQUARE_SIZE + LEFT_MARGIN
-                    square_y = row * SQUARE_SIZE + TOP_MARGIN
-                    pygame.draw.rect(screen, DARK_GREEN, (square_x, square_y, SQUARE_SIZE, SQUARE_SIZE))
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:  # Left mouse button
-                if dragging:
-                    dragging = False
-                    mouse_x, mouse_y = event.pos
-                    col = (mouse_x - LEFT_MARGIN) // SQUARE_SIZE
-                    row = (mouse_y - TOP_MARGIN) // SQUARE_SIZE
-
-                    # Check if the drop is on a blue square
-                    if row > 0:
-                        # Snap the black point to the center of the square
-                        black_points.append((col * SQUARE_SIZE + LEFT_MARGIN + SQUARE_SIZE // 2,
-                                             row * SQUARE_SIZE + TOP_MARGIN + SQUARE_SIZE // 2))
-
-    # Draw the grid
-    draw_grid()
-
-    # Update the display
-    pygame.display.flip()
-    clock.tick(60)  # Limit the frame rate
-
-# Quit Pygame
-pygame.quit()
------
 nom: settings.py
 -----
 DEBUG=True
@@ -475,50 +329,6 @@ DEBUG=True
 TICKS_PER_SECOND=20 # Amount of ticks per second
 
 TIME_PER_TICK = 1/TICKS_PER_SECOND
------
-nom: MAIN.py
------
-import pygame
-pygame.init()
-
-width, height = 256*5, 192*5
-screen = pygame.display.set_mode((width, height))
-
-background_image = pygame.image.load('assets/background.png').convert()
-
-running = True
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Draw the background
-    screen.blit(background_image, (0, 0))
-
-    # Update the display
-    pygame.display.flip()
-
-# Quit Pygame
-pygame.quit()
-
------
-nom: test3.py
------
-from utils.GameObjects import zombies
-
-z = zombies[0].spawn(0,0)
-for i in range(10):
-    z.texture.next_frame()
-    print(f"current animation index: {z.texture.current_animation_index} | Current frame: {z.texture.current_animation.time}")
-    
-print("---------------------------------------")
-
-z.takeDamage(400)
-for i in range(10):
-    z.texture.next_frame()
-    print(f"current animation index: {z.texture.current_animation_index} | Current frame: {z.texture.current_animation.time}")
-    
 -----
 nom: Munition.py
 -----
@@ -560,8 +370,6 @@ class Munition(Spawnable):
     def checkZombies(self) -> bool:
         for zombie in self.zombies:
             if zombie.isInHitbox(self):
-                if settings.DEBUG:
-                    print(f"A Munition has touched a Zombie at X: {self.x} ; Y: {self.y}")
                 return True
         return False
 -----
@@ -574,9 +382,11 @@ from utils.Spawnable import Spawnable
 from utils.mathematics import distance
 from utils.TexturedObject import TexturedObject
 
+import settings
+
 
 class Zombie(Spawnable):
-    def __init__(self, name: str, texture: TexturedObject, hitbox: Tuple[int, int], speed: float, health: int, damage: int, score: int) -> None:
+    def __init__(self, name: str, texture: TexturedObject, hitbox: Tuple[int, int], speed: float, health: int, damage: int, attack_speed: int,  score: int) -> None:
         """Class to create a Zombie
 
         Args:
@@ -586,6 +396,7 @@ class Zombie(Spawnable):
             speed (float): The speed of the zombie
             health (int): The amound of health the Zombie has
             damage (int): The amount of damage the Zombie deals
+            attack_speed (int): Teh number of ticks it waits before attacking again
             score (int): The score the Zombie gives on death
         """
         
@@ -602,13 +413,17 @@ class Zombie(Spawnable):
         
         self.health = health
         self.damage = damage
+        self.attack_speed = attack_speed
         
         self.score = score
+        
+        self.eating: bool = False
 
         return    
     
     def move(self) -> None:
-        self.x -= self.speed
+        if not self.eating:
+            self.x -= self.speed
         
         return
     
@@ -625,9 +440,24 @@ class Zombie(Spawnable):
         
         return False
     
-    def isInRadius(self, munition: Munition) -> bool:
-        if distance(munition.x, munition.y, self.x, self.y) <= munition.radius:
+    def is_colliding_with_plant(self, plant) -> bool:
+        zombie_center_y = self.y
+        plant_top = plant.y - plant.hitbox[1] / 2
+        plant_bottom = plant.y + plant.hitbox[1] / 2
+
+        if (plant_top <= zombie_center_y <= plant_bottom) and (abs(self.x - plant.x) <= 1):
+            self.eating = True
             return True
+        return False
+    
+    def isInRadius(self, munition: Munition) -> bool:
+        # Calculate the distance between the center of the zombie and the center of the munition
+        dist = distance(self.x, self.y, munition.x, munition.y)
+
+        # Check if the distance is less than or equal to the radius of the munition plus half the width of the zombie's hitbox
+        if dist <= munition.radius + self.hitbox[0] / 2:
+            return True
+
         return False
     
     def takeDamage(self, damage: int) -> None:
@@ -703,6 +533,11 @@ class Plant(Spawnable):
                     return spawned
             
         return
+    
+    def take_damage(self, damage: int) -> None:
+        self.health -= damage
+        if self.health <= 0:
+            self.alive = False
 -----
 nom: Sun.py
 -----
@@ -729,8 +564,8 @@ from creatures.Munition import Munition
 from creatures.Plant import Plant
 from creatures.Zombie import Zombie
 from creatures.Sun import Sun
-from utils.AnimationFrame import AnimationFrame
-from utils.TexturedObject import TexturedObject
+
+import utils.GameObjects as GameObjects
 
 import settings
 
@@ -784,7 +619,7 @@ class Level:
         """
         # There will be by default 1 sun for every 10 seconds
         self.suns_spawn_times: List[int] = []
-        total_suns: int = int(self.duration / (settings.GAME_TICK * 10))
+        total_suns: int = int(self.duration / (settings.TICKS_PER_SECOND * 10))
         for _ in range(total_suns):
             self.suns_spawn_times.append(random.randint(0, self.duration))
         
@@ -835,7 +670,7 @@ class Level:
         firstSuns = self.suns_spawn_times[0]
         if firstSuns == self.time:
             
-            spawned: Sun = Sun(50, TexturedObject([AnimationFrame(["assets/background.png"])])).spawn(random.randint(0,7), 5)
+            spawned: Sun = GameObjects.suns[0].spawn(random.randint(0,7), 5)
             
             self.alive_suns.append(spawned)
             self.suns_spawn_times.pop(0)
@@ -844,8 +679,15 @@ class Level:
         
         return
     
-    def addPlant(self, plant: Plant, x: int, y: int) -> None:
-        spawned: Plant = plant.spawn(x, y)
+    def addPlant(self, plant_index: int, x: int, y: int) -> None:
+        """Add the Plant with index in the Plants array to the world
+
+        Args:
+            plant_index (Plant): The index of the plant
+            x (int): The X coord
+            y (int): The Y coord
+        """
+        spawned: Plant = self.plants[plant_index].spawn(x, y)
         
         self.alive_plants.append(spawned)
         
@@ -881,6 +723,20 @@ class Level:
                 
                 if settings.DEBUG:
                     print(f"Zombie killed at {self.time} in X: {zombie.x} ; Y: {zombie.y}")
+                    
+        # Check for collisions between zombies and plants
+        for zombie in self.alive_zombies:
+            for plant in self.alive_plants:
+                if zombie.is_colliding_with_plant(plant) and self.time%zombie.attack_speed == 0:
+                    if settings.DEBUG:
+                        print(f"Zombie with uuid {zombie.uuid} is colliding Plant with uuid {plant.uuid}. New plant's health : {plant.health}")
+                    plant.take_damage(zombie.damage)
+                    
+                    if plant.health <= 0:
+                        if settings.DEBUG:
+                            print(f"Plant with uuid {plant.uuid} has been killed")
+                        self.alive_plants.remove(plant)
+                    break  # A zombie can only attack one plant at a time
             
         # Perform all the Plants' actions
         for plant in self.alive_plants:
@@ -888,6 +744,7 @@ class Level:
             
             if possible_munition:
                 self.alive_munitions.append(possible_munition)
+
         
         
         return
